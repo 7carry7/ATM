@@ -1,17 +1,28 @@
 package com.cumt.atm.controller;
 
 import com.cumt.atm.domain.IndividualAccount;
+import com.cumt.atm.domain.TransferMoney;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.repository.query.FluentQuery;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
+import java.util.List;
+import java.util.Optional;
 import java.util.Random;
+import java.util.function.Function;
 
 @RestController
 @RequestMapping("/Individual")
 public class IndividualAccountController {
 //    @Autowired
     private IndividualAccountRepository individualAccountRepository;
+
     @Autowired
     public IndividualAccountController(IndividualAccountRepository individualAccountRepository) {
         this.individualAccountRepository = individualAccountRepository;
@@ -61,6 +72,11 @@ public class IndividualAccountController {
 
         individualAccountRepository.save(individualAccount);
 
+//        // 当注册一个新用户时，在转帐表生成记录，无意义
+//        TransferMoney transferMoney = new TransferMoney();
+//        transferMoney.setFromAccount(individualAccount.getCardNumber());
+//        transferMoneyRepository.save(transferMoney);
+
         System.out.println("注册完成");
 //        System.out.println(individualAccount);
 //        IndividualAccount foundAccount = individualAccountRepository.findByCardNumber(individualAccount.getCardNumber());
@@ -69,10 +85,33 @@ public class IndividualAccountController {
     }
 
     @PostMapping("/query")
-    public IndividualAccount query(@RequestBody IndividualAccount individualAccount){
+    public IndividualAccount/*ResponseEntity<IndividualAccount>*/ query(@RequestBody IndividualAccount individualAccount){
 //        System.out.println(individualAccount);
         IndividualAccount foundAccount = individualAccountRepository.findByCardNumber(individualAccount.getCardNumber());
         System.out.println(foundAccount);
         return foundAccount;
+    }
+
+    @PostMapping("/modifypsw")
+    public boolean modifypsw(@RequestBody IndividualAccount individualAccount){
+        IndividualAccount found = individualAccountRepository.findByCardNumber(individualAccount.getCardNumber());
+        System.out.println(found);
+//        individualAccountRepository.updatePasswordByCardNumber(individualAccount.getCardNumber()
+//                ,individualAccount.getPassword());
+        found.setPassword(individualAccount.getPassword());
+        individualAccountRepository.save(found);
+        System.out.println(found);
+        return true;
+    }
+    @PostMapping("/modifypn")
+    public boolean modifypn(@RequestBody IndividualAccount individualAccount){
+        IndividualAccount found = individualAccountRepository.findByCardNumber(individualAccount.getCardNumber());
+        System.out.println(found);
+//        individualAccountRepository.updatePasswordByCardNumber(individualAccount.getCardNumber()
+//                ,individualAccount.getPassword());
+        found.setPhoneNumber(individualAccount.getPhoneNumber());
+        individualAccountRepository.save(found);
+        System.out.println(found);
+        return true;
     }
 }

@@ -1,15 +1,21 @@
 package com.cumt.atm.domain;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.math.BigDecimal;
 import java.util.Date;
 
+@Entity
+//@Table(name = "transfer_money")
 public class TransferMoney {
     private Date appointmentTime;
+    @Id
     private int transferId;
     private String fromAccount;
     private String toAccount;
     private BigDecimal amount;
-    private Date transfer_date;
+    private Date transferDate;
     private String description;
 
     public Date getAppointmentTime() {
@@ -52,12 +58,12 @@ public class TransferMoney {
         this.amount = amount;
     }
 
-    public Date getTransfer_date() {
-        return transfer_date;
+    public Date getTransferDate() {
+        return transferDate;
     }
 
-    public void setTransfer_date(Date transfer_date) {
-        this.transfer_date = transfer_date;
+    public void setTransferDate(Date transferDate) {
+        this.transferDate = transferDate;
     }
 
     public String getDescription() {
@@ -76,7 +82,7 @@ public class TransferMoney {
                 ", fromAccount='" + fromAccount + '\'' +
                 ", toAccount='" + toAccount + '\'' +
                 ", amount=" + amount +
-                ", transfer_date=" + transfer_date +
+                ", transferDate=" + transferDate +
                 ", description='" + description + '\'' +
                 '}';
     }
