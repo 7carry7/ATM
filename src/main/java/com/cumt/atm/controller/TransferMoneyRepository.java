@@ -3,15 +3,25 @@ package com.cumt.atm.controller;
 import com.cumt.atm.domain.IndividualAccount;
 import com.cumt.atm.domain.TransferMoney;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Repository
 public interface TransferMoneyRepository extends JpaRepository<TransferMoney,String> {
     TransferMoney findTransferMoneyByFromAccount(String fromAccount);
     TransferMoney findTransferMoneyByToAccount(String toAccount);
-    TransferMoney findByTransferDate(Date date);
+
+    List<TransferMoney> findTransferMoneyByFromAccountOrToAccount(String fromAccount,String toAccount);
+
+//    TransferMoney findByTransferDate(Date date);
+    @Query("SELECT t FROM TransferMoney t WHERE t.transferDate BETWEEN :startDate AND :endDate AND t.fromAccount = :fromAccount")
+    List<TransferMoney> findByTransferDate(@Param("startDate") Date startDate, @Param("endDate") Date endDate,@Param("fromAccount")String fromAccount);
+
 }
 //    TransferMoneyRepository transferMoneyRepository = new TransferMoneyRepository() {
 //        @Override

@@ -22,16 +22,20 @@ import java.util.function.Function;
 public class IndividualAccountController {
 //    @Autowired
     private IndividualAccountRepository individualAccountRepository;
-
+    private TransferMoneyRepository transferMoneyRepository;
     @Autowired
-    public IndividualAccountController(IndividualAccountRepository individualAccountRepository) {
+    public IndividualAccountController(IndividualAccountRepository individualAccountRepository, TransferMoneyRepository transferMoneyRepository) {
         this.individualAccountRepository = individualAccountRepository;
+        this.transferMoneyRepository = transferMoneyRepository;
     }
+
+
+
     //    @Autowired
 //    public void setIndividualAccountRepository(IndividualAccountRepository individualAccountRepository) {
 //        this.individualAccountRepository = individualAccountRepository;
 //    }
-
+    // 已实现登录、注册、查询个人账户信息、修改手机号和密码、转账、存款
     @PostMapping("/login")
     public boolean logIn(@RequestBody IndividualAccount individualAccount) {
         IndividualAccount foundAccount = individualAccountRepository.findByCardNumber(individualAccount.getCardNumber());
@@ -49,6 +53,38 @@ public class IndividualAccountController {
         return false;
 
     }
+    // 存款取款的情况讨论，还要添加交易记录
+    @PostMapping("/save")
+    public boolean save(@RequestBody IndividualAccount individualAccount){
+        IndividualAccount foundAccount = individualAccountRepository.findByCardNumber(individualAccount.getCardNumber());
+        foundAccount.setBalance(foundAccount.getBalance().add(individualAccount.getBalance()));
+        individualAccountRepository.save(foundAccount);
+        System.out.println(foundAccount);
+        TransferMoney transferMoney = new TransferMoney();
+        transferMoney.setFromAccount(individualAccount.getCardNumber());
+        transferMoney.setToAccount(individualAccount.getCardNumber());
+        transferMoney.setDescription("存款");
+        transferMoney.setAmount(individualAccount.getBalance());
+        transferMoney.setTransferDate(new Date());
+        transferMoneyRepository.save(transferMoney);
+        return true;
+    }
+    @PostMapping("/withdraw")
+    public boolean withdraw(@RequestBody IndividualAccount individualAccount){
+        IndividualAccount foundAccount = individualAccountRepository.findByCardNumber(individualAccount.getCardNumber());
+        foundAccount.setBalance(foundAccount.getBalance().subtract(individualAccount.getBalance()));
+        individualAccountRepository.save(foundAccount);
+        System.out.println(foundAccount);
+        TransferMoney transferMoney = new TransferMoney();
+        transferMoney.setFromAccount(individualAccount.getCardNumber());
+        transferMoney.setToAccount(individualAccount.getCardNumber());
+        transferMoney.setDescription("取款");
+        transferMoney.setAmount(individualAccount.getBalance());
+        transferMoney.setTransferDate(new Date());
+        transferMoneyRepository.save(transferMoney);
+
+        return true;
+    }
     @PostMapping("/signUp")
     public boolean signUp(@RequestBody IndividualAccount individualAccount){
         // 随机数生成器
@@ -60,7 +96,6 @@ public class IndividualAccountController {
         for (int i = 0; i < 18; i++) {
             // 生成随机数字，范围为0-9
             int randomDigit = random.nextInt(10);
-
             // 将随机数字追加到字符串构建器
             stringBuilder.append(randomDigit);
         }

@@ -16,7 +16,7 @@ public class TransferMoney {
     private String toAccount;
     private BigDecimal amount;
     private Date transferDate;
-    private String description;
+    private String description; // 转账 or 存款 or 取款
 
     public Date getAppointmentTime() {
         return appointmentTime;
