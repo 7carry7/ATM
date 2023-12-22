@@ -15,11 +15,16 @@ public class IndividualAccount {
     private int accountType;
     private BigDecimal balance;
     private Date openDate;
-    private String address;
-
-    private String phoneNumber;
     private int isActive;
-    private String email;
+    private String idCard;
+
+    public String getIdCard() {
+        return idCard;
+    }
+
+    public void setIdCard(String idCard) {
+        this.idCard = idCard;
+    }
 
     public String getCardNumber() {
         return cardNumber;
@@ -72,36 +77,12 @@ public class IndividualAccount {
 
     }
 
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
-    public String getPhoneNumber() {
-        return phoneNumber;
-    }
-
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
-    }
-
     public int getIsActive() {
         return isActive;
     }
 
     public void setIsActive(int isActive) {
         this.isActive = isActive;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
     }
 
     @Override
@@ -113,10 +94,8 @@ public class IndividualAccount {
                 ", accountType=" + accountType +
                 ", balance=" + balance +
                 ", openDate=" + openDate +
-                ", address='" + address + '\'' +
-                ", phoneNumber='" + phoneNumber + '\'' +
                 ", isActive=" + isActive +
-                ", email='" + email + '\'' +
+                ", idCard='" + idCard + '\'' +
                 '}';
     }
 }

@@ -5,6 +5,7 @@ package com.cumt.atm.controller;
 //
 //public interface individualAccountRepository {
 //}
+
 import com.cumt.atm.domain.IndividualAccount;
 //import org.apache.ibatis.annotations.Param;
 import org.springframework.data.repository.query.Param;

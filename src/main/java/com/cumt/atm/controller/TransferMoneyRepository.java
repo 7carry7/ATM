@@ -12,15 +12,16 @@ import java.util.Date;
 import java.util.List;
 
 @Repository
-public interface TransferMoneyRepository extends JpaRepository<TransferMoney,String> {
+public interface TransferMoneyRepository extends JpaRepository<TransferMoney, String> {
     TransferMoney findTransferMoneyByFromAccount(String fromAccount);
+
     TransferMoney findTransferMoneyByToAccount(String toAccount);
 
-    List<TransferMoney> findTransferMoneyByFromAccountOrToAccount(String fromAccount,String toAccount);
+    List<TransferMoney> findTransferMoneyByFromAccountOrToAccount(String fromAccount, String toAccount);
 
-//    TransferMoney findByTransferDate(Date date);
+    //    TransferMoney findByTransferDate(Date date);
     @Query("SELECT t FROM TransferMoney t WHERE t.transferDate BETWEEN :startDate AND :endDate AND t.fromAccount = :fromAccount")
-    List<TransferMoney> findByTransferDate(@Param("startDate") Date startDate, @Param("endDate") Date endDate,@Param("fromAccount")String fromAccount);
+    List<TransferMoney> findByTransferDate(@Param("startDate") Date startDate, @Param("endDate") Date endDate, @Param("fromAccount") String fromAccount);
 
 }
 //    TransferMoneyRepository transferMoneyRepository = new TransferMoneyRepository() {

@@ -1,8 +1,6 @@
 package com.cumt.atm.domain;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.Date;
 
@@ -11,6 +9,7 @@ import java.util.Date;
 public class TransferMoney {
     private Date appointmentTime;
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int transferId;
     private String fromAccount;
     private String toAccount;
