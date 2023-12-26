@@ -11,6 +11,8 @@ import org.springframework.data.repository.query.FluentQuery;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
 
 import java.util.*;
 import java.util.function.Function;
@@ -35,6 +37,7 @@ public class TransferMoneyController {
 
     @PostMapping("/transfer")
     public ResponseEntity<String> transfer(@RequestBody TransferMoney transferMoney) {
+        System.out.println(transferMoney);
         IndividualAccount foundFrom = individualAccountRepository.findByCardNumber(
                 transferMoney.getFromAccount());
         IndividualAccount foundTo = individualAccountRepository.findByCardNumber(
@@ -62,7 +65,7 @@ public class TransferMoneyController {
     }
 
     @PostMapping("/save") // 前端检查存款信息、输入格式等
-    public boolean save(@RequestBody IndividualAccount individualAccount) {
+    public ResponseEntity<String> save(@RequestBody IndividualAccount individualAccount) {
 //        // 先判断是否登录
 //        if(thisAccount == null || thisAccount.getIsActive() == 0){
 //            return false;
@@ -70,7 +73,7 @@ public class TransferMoneyController {
 
         IndividualAccount foundAccount = individualAccountRepository.findByCardNumber(
                 individualAccount.getCardNumber());
-        if (foundAccount == null) return false;  // 账号信息有误
+        if (foundAccount == null) return ResponseEntity.badRequest().body("账号有误");  // 账号信息有误
         foundAccount.setBalance(foundAccount.getBalance().add(individualAccount.getBalance()));
         individualAccountRepository.save(foundAccount);
         System.out.println(foundAccount);
@@ -82,12 +85,13 @@ public class TransferMoneyController {
         transferMoney.setTransferDate(new Date());
         thisTransferMoney = transferMoney;
         transferMoneyRepository.save(transferMoney);
+        System.out.println("yes");
 //        return ResponseEntity.ok("存款操作已完成");
-        return true;
+        return ResponseEntity.ok("存款完成");
     }
 
     @PostMapping("/withdraw")
-    public ResponseEntity<String> withdraw(@RequestBody IndividualAccount individualAccount) {
+    public ResponseEntity<String> withdraw(@RequestBody IndividualAccount individualAccount/*,RedirectAttributes redirectAttributes*/) {
 
 //        if(thisAccount == null || thisAccount.getIsActive() == 0){
 //            return ResponseEntity.badRequest().body("账户异常");
@@ -109,7 +113,11 @@ public class TransferMoneyController {
         transferMoney.setTransferDate(new Date());
         thisTransferMoney = transferMoney;
         transferMoneyRepository.save(transferMoney);
-
+//        // 将消息或其他数据添加到重定向属性中
+//        redirectAttributes.addFlashAttribute("message", foundAccount.getBalance().toString());
+//
+//        // 重定向到其他 URL
+//        return "redirect:http://localhost:8080/#/succwithdrawal";
         return ResponseEntity.ok("取款操作已完成");
     }
 
@@ -117,13 +125,14 @@ public class TransferMoneyController {
     public ResponseEntity<TransferMoney> print(){
         return ResponseEntity.ok(thisTransferMoney);
     }
-    @PostMapping("queryByAccount")
-    public ResponseEntity<List<TransferMoney>> queryByAccount(@RequestBody TransferMoney transferMoney) {
-        List<TransferMoney> list = new ArrayList<>();
-        list = transferMoneyRepository.findTransferMoneyByFromAccountOrToAccount(transferMoney.getFromAccount(), transferMoney.getFromAccount());
-        // 前端判断如果返回的是空list，则说明账号有误
-        return ResponseEntity.ok().body(list);
-    }
+
+//    @PostMapping("queryByAccount")
+//    public ResponseEntity<List<TransferMoney>> queryByAccount(@RequestBody TransferMoney transferMoney) {
+//        List<TransferMoney> list = new ArrayList<>();
+//        list = transferMoneyRepository.findTransferMoneyByFromAccountOrToAccount(transferMoney.getFromAccount(), transferMoney.getFromAccount());
+//        // 前端判断如果返回的是空list，则说明账号有误
+//        return ResponseEntity.ok().body(list);
+//    }
 
     @GetMapping("queryByDate")
     public ResponseEntity<List<TransferMoney>> queryByDate(@RequestParam("startDate")
@@ -135,6 +144,15 @@ public class TransferMoneyController {
         List<TransferMoney> list = new ArrayList<>();
         // list为按时间查找的记录
         list = transferMoneyRepository.findByTransferDate(startDate, endDate, fromAccount);
+
+        return ResponseEntity.ok().body(list);
+    }
+    @GetMapping("/queryByCN")
+    public ResponseEntity<List<TransferMoney>> queryByDate(@RequestParam String cardNumber) {
+
+        List<TransferMoney> list = new ArrayList<>();
+        // list为按时间查找的记录
+        list = transferMoneyRepository.findTransferMoneyByFromAccount(cardNumber);
 
         return ResponseEntity.ok().body(list);
     }

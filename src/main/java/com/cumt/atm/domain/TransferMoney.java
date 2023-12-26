@@ -76,13 +76,13 @@ public class TransferMoney {
     @Override
     public String toString() {
         return "TransferMoney{" +
-                "appointmentTime=" + appointmentTime +
-                ", transferId=" + transferId +
-                ", fromAccount='" + fromAccount + '\'' +
-                ", toAccount='" + toAccount + '\'' +
-                ", amount=" + amount +
-                ", transferDate=" + transferDate +
-                ", description='" + description + '\'' +
+//                "appointmentTime=" + appointmentTime +
+//                "transferId=" + transferId +  // 数据库主键
+                "fromAccount='" + fromAccount + '\'' +   // 转出
+                ", toAccount='" + toAccount + '\'' +    // 转入
+                ", amount=" + amount +   // 交易的金额
+                ", transferDate=" + transferDate +   // 交易时间
+                ", description='" + description + '\'' +  // 转账 存款 取款
                 '}';
     }
 }

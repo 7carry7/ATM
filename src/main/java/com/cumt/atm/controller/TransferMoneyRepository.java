@@ -13,11 +13,12 @@ import java.util.List;
 
 @Repository
 public interface TransferMoneyRepository extends JpaRepository<TransferMoney, String> {
-    TransferMoney findTransferMoneyByFromAccount(String fromAccount);
+//    TransferMoney findTransferMoneyByFromAccount(String fromAccount);
 
     TransferMoney findTransferMoneyByToAccount(String toAccount);
 
     List<TransferMoney> findTransferMoneyByFromAccountOrToAccount(String fromAccount, String toAccount);
+    List<TransferMoney> findTransferMoneyByFromAccount(String fromAccount);
 
     //    TransferMoney findByTransferDate(Date date);
     @Query("SELECT t FROM TransferMoney t WHERE t.transferDate BETWEEN :startDate AND :endDate AND t.fromAccount = :fromAccount")

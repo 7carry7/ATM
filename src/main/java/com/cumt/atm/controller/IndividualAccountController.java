@@ -54,8 +54,9 @@ public class IndividualAccountController {
 
         if(i > 3) return ResponseEntity.badRequest().body("账号已冻结，请联系银行工作人员解决");
         IndividualAccount foundAccount = individualAccountRepository.findByCardNumber(individualAccount.getCardNumber());
-        if (foundAccount.getIsActive() == 1) return ResponseEntity.ok("账号已处于登录状态");
+
         if (foundAccount != null) {
+//            if (foundAccount.getIsActive() == 1) return ResponseEntity.ok("账号已处于登录状态");
             // 比较密码等逻辑
             if (foundAccount.getPassword() == individualAccount.getPassword()) {
                 // 登录成功状态设置为1
@@ -212,9 +213,11 @@ public class IndividualAccountController {
         System.out.println(foundAccount);
         return foundAccount;
     }
-    @PostMapping("/queryBalance") // 接收实体和接收参数
-    public ResponseEntity<String> query1(@RequestParam String s){
-        IndividualAccount foundAccount = individualAccountRepository.findByCardNumber(s);
+    @GetMapping("/queryBalance") // 接收实体和接收参数
+    public ResponseEntity<String> query1(@RequestParam String cardNumber/*@RequestBody IndividualAccount individualAccount*/){
+        System.out.println(cardNumber);
+        IndividualAccount foundAccount = individualAccountRepository.findByCardNumber(cardNumber);
+        System.out.println(foundAccount);
         if (foundAccount == null) return ResponseEntity.badRequest().body("卡号有误");
         return ResponseEntity.ok(foundAccount.getBalance().toString());
     }
