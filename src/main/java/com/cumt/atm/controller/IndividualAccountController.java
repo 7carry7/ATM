@@ -69,7 +69,8 @@ public class IndividualAccountController {
                 // 返回 true 或 false，表示登录成功或失败
             } else {
                 i++;
-                return ResponseEntity.badRequest().body("密码有误");
+//                return ResponseEntity.badRequest().body("密码有误");
+                return ResponseEntity.ok("密码有误");
             }
         }
 
@@ -226,7 +227,7 @@ public class IndividualAccountController {
     public ResponseEntity<String> modifypsw(@RequestBody IndividualAccount individualAccount) {
         IndividualAccount found = individualAccountRepository.findByCardNumber(individualAccount.getCardNumber());
         System.out.println(found);
-        if(found.getPassword() != individualAccount.getPassword()) return ResponseEntity.badRequest().body("旧密码错误");
+//        if(found.getPassword() != individualAccount.getPassword()) return ResponseEntity.badRequest().body("旧密码错误");
 //        individualAccountRepository.updatePasswordByCardNumber(individualAccount.getCardNumber()
 //                ,individualAccount.getPassword());
         found.setPassword(individualAccount.getPassword());

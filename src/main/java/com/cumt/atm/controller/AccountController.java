@@ -10,11 +10,16 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/account")
 public class AccountController {
     private AccountRepository accountRepository;
+    private IndividualAccountRepository individualAccountRepository;
 
     @Autowired
-    public AccountController(AccountRepository accountRepository) {
+    public AccountController(AccountRepository accountRepository, IndividualAccountRepository individualAccountRepository) {
         this.accountRepository = accountRepository;
+        this.individualAccountRepository = individualAccountRepository;
     }
+
+
+
     @PostMapping("/queryInfo")
     public ResponseEntity<Account> queryInfo(@RequestBody Account account){
         Account found = accountRepository.findByIdCard(account.getIdCard());
@@ -22,15 +27,25 @@ public class AccountController {
     }
 
     @PostMapping("/modifypn")
-    public boolean modifypn(@RequestBody Account account) {
-        Account found = accountRepository.findByIdCard(account.getIdCard());
-        System.out.println(found);
+    public boolean modifypn(@RequestBody IndividualAccount individualAccount) {
+        IndividualAccount found = individualAccountRepository.findByCardNumber(individualAccount.getCardNumber());
+        Account account = accountRepository.findByIdCard(individualAccount.getIdCard());
+        System.out.println(account);
 //        individualAccountRepository.updatePasswordByCardNumber(individualAccount.getCardNumber()
 //                ,individualAccount.getPassword());
-        found.setPhoneNumber(account.getPhoneNumber());
-        accountRepository.save(found);
-        System.out.println(found);
+        account.setPhoneNumber(individualAccount.getHolderName());
+        accountRepository.save(account);
+        System.out.println(account);
         return true;
+    }
+    @PostMapping("/querypn")
+    public boolean querypn(@RequestBody IndividualAccount individualAccount){
+        IndividualAccount found = individualAccountRepository.findByCardNumber(individualAccount.getCardNumber());
+        Account account = accountRepository.findByIdCard(found.getIdCard());
+        if (account.getPhoneNumber().equals(individualAccount.getHolderName())){
+            return true;
+        }
+        return false;
     }
     @PostMapping("/modifyem")
     public boolean modifyem(@RequestBody Account account){

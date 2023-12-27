@@ -20,6 +20,8 @@ public interface TransferMoneyRepository extends JpaRepository<TransferMoney, St
     List<TransferMoney> findTransferMoneyByFromAccountOrToAccount(String fromAccount, String toAccount);
     List<TransferMoney> findTransferMoneyByFromAccount(String fromAccount);
 
+    List<TransferMoney> findAll();
+
     //    TransferMoney findByTransferDate(Date date);
     @Query("SELECT t FROM TransferMoney t WHERE t.transferDate BETWEEN :startDate AND :endDate AND t.fromAccount = :fromAccount")
     List<TransferMoney> findByTransferDate(@Param("startDate") Date startDate, @Param("endDate") Date endDate, @Param("fromAccount") String fromAccount);

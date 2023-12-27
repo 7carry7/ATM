@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 
+import java.math.BigDecimal;
 import java.util.*;
 import java.util.function.Function;
 
@@ -24,6 +25,7 @@ public class TransferMoneyController {
     private TransferMoneyRepository transferMoneyRepository;
     private IndividualAccountRepository individualAccountRepository;
     private TransferMoney thisTransferMoney;
+//    private static BigDecimal all = new BigDecimal(10000);
 
     @Autowired
     public TransferMoneyController(TransferMoneyRepository transferMoneyRepository,
@@ -75,6 +77,10 @@ public class TransferMoneyController {
                 individualAccount.getCardNumber());
         if (foundAccount == null) return ResponseEntity.badRequest().body("账号有误");  // 账号信息有误
         foundAccount.setBalance(foundAccount.getBalance().add(individualAccount.getBalance()));
+
+        AtmController.setBalance(AtmController.getBalance().add(individualAccount.getBalance()));
+        System.out.println(AtmController.getBalance().toString());
+
         individualAccountRepository.save(foundAccount);
         System.out.println(foundAccount);
         TransferMoney transferMoney = new TransferMoney();
@@ -98,11 +104,20 @@ public class TransferMoneyController {
 //        }
 
         IndividualAccount foundAccount = individualAccountRepository.findByCardNumber(individualAccount.getCardNumber());
-        if (foundAccount == null) return ResponseEntity.badRequest().body("账号信息有误");
+        if (foundAccount == null) return ResponseEntity.ok("账号信息有误");
+
         if (foundAccount.getBalance().compareTo(individualAccount.getBalance()) < 0) {
-            return ResponseEntity.badRequest().body("余额不足");
+            return ResponseEntity.ok("余额不足");
         }
+        if (AtmController.getBalance().compareTo(individualAccount.getBalance()) < 0){
+            return ResponseEntity.ok("钞箱现金不足");
+        }
+
         foundAccount.setBalance(foundAccount.getBalance().subtract(individualAccount.getBalance()));
+
+        AtmController.setBalance(AtmController.getBalance().subtract(individualAccount.getBalance()));
+        System.out.println(AtmController.getBalance().toString());
+
         individualAccountRepository.save(foundAccount);
         System.out.println(foundAccount);
         TransferMoney transferMoney = new TransferMoney();
@@ -121,8 +136,9 @@ public class TransferMoneyController {
         return ResponseEntity.ok("取款操作已完成");
     }
 
-    @PostMapping("/print")
+    @GetMapping("/print")
     public ResponseEntity<TransferMoney> print(){
+        System.out.println(thisTransferMoney);
         return ResponseEntity.ok(thisTransferMoney);
     }
 
@@ -156,5 +172,7 @@ public class TransferMoneyController {
 
         return ResponseEntity.ok().body(list);
     }
+
+
 }
 //
